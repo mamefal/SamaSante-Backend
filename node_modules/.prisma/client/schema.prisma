@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+/**
+ * ⚠️ IMPORTANT : l'enum doit exister et être bien fermée
+ */
+enum Role {
+  ADMIN
+  DOCTOR
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String // hash
+  role      Role
+  doctor    Doctor?  @relation(fields: [doctorId], references: [id])
+  doctorId  Int?
+  createdAt DateTime @default(now())
+}
+
+model Doctor {
+  id             Int              @id @default(autoincrement())
+  ordreNumber    String?          @unique
+  firstName      String
+  lastName       String
+  specialty      String
+  phonePublic    String?
+  emailPublic    String?
+  status         String           @default("pending") // pending|verified|blocked
+  kycScore       Int              @default(0)
+  practiceSite   PracticeSite?    @relation(fields: [practiceSiteId], references: [id])
+  practiceSiteId Int?
+  availabilities Availability[]
+  appointments   Appointment[]
+  documents      DoctorDocument[]
+  createdAt      DateTime         @default(now())
+  verifiedAt     DateTime?
+  User           User[]
+}
+
+model PracticeSite {
+  id           Int            @id @default(autoincrement())
+  name         String
+  type         String // hopital|clinique|cabinet
+  region       String
+  city         String
+  address      String?
+  doctors      Doctor[]
+  appointments Appointment[]
+  Availability Availability[]
+}
+
+model Patient {
+  id           Int           @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  dob          DateTime
+  phone        String?
+  email        String?
+  medicalFile  MedicalFile?
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+}
+
+model MedicalFile {
+  id         Int      @id @default(autoincrement())
+  patient    Patient  @relation(fields: [patientId], references: [id])
+  patientId  Int      @unique
+  allergies  String?
+  treatments String?
+  notes      String?
+  updatedAt  DateTime @updatedAt
+}
+
+model Availability {
+  id       Int           @id @default(autoincrement())
+  doctor   Doctor        @relation(fields: [doctorId], references: [id])
+  doctorId Int
+  site     PracticeSite? @relation(fields: [siteId], references: [id])
+  siteId   Int?
+  ruleJson String // {"freq":"WEEKLY","byweekday":[1,3],"start":"09:00","end":"12:00"}
+}
+
+model Appointment {
+  id        Int           @id @default(autoincrement())
+  patient   Patient       @relation(fields: [patientId], references: [id])
+  patientId Int
+  doctor    Doctor        @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  site      PracticeSite? @relation(fields: [siteId], references: [id])
+  siteId    Int?
+  motive    String
+  start     DateTime
+  end       DateTime
+  status    String        @default("booked") // booked|done|cancelled|no_show
+  source    String        @default("mobile") // mobile|web
+  createdAt DateTime      @default(now())
+}
+
+model DoctorDocument {
+  id       Int       @id @default(autoincrement())
+  doctor   Doctor    @relation(fields: [doctorId], references: [id])
+  doctorId Int
+  type     String // ordre_attestation|diplome|cni
+  fileKey  String
+  issuedBy String?
+  issuedAt DateTime?
+  verified Boolean   @default(false)
+}

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    "outDir": "dist",
+    "sourceMap": true,
+
+    "types": ["node"],
+
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+
+    /* Optionnel en dev (accélère) :
+    "declaration": false,
+    "declarationMap": false
+    */
+  },
+  "include": ["src", "prisma"]
+}
