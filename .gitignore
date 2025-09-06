@@ -1,0 +1,72 @@
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+.next/
+.expo/
+.expo-shared/
+.expo/*
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Logs ---
+logs
+*.log
+*.log.*
+log/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# --- Environment files ---
+.env
+.env.*.local
+
+# --- macOS ---
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# --- IDE / Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Java / Spring Boot ---
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+target/
+out/
+
+# --- OS / Misc ---
+Thumbs.db
+ehthumbs.db
+*.orig
+*.rej
+*.sublime-workspace
+*.sublime-project
+
+# --- Docker ---
+*.pid
+*.seed
+*.pid.lock
+.docker/
+docker-compose.override.yml
+
+
