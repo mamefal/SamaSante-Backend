@@ -1,10 +1,11 @@
 import type { Context, Next } from 'hono'
-import { verifyJwt } from '../lib/auth'   // <= sans .js si tu es en TS
+import { verifyJwt } from '../lib/auth.js'   
 
 type JwtUser = {
   sub: number
-  role: 'ADMIN' | 'DOCTOR'
+  role: 'ADMIN' | 'DOCTOR'| 'PATIENT'
   doctorId?: number | null
+  patientId?: number | null
 }
 
 export const requireAuth = (roles?: JwtUser['role'][]) =>

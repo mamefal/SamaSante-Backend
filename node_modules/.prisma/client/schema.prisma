@@ -8,12 +8,10 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-/**
- * ⚠️ IMPORTANT : l'enum doit exister et être bien fermée
- */
 enum Role {
   ADMIN
   DOCTOR
+  PATIENT
 }
 
 model User {
@@ -23,6 +21,9 @@ model User {
   role      Role
   doctor    Doctor?  @relation(fields: [doctorId], references: [id])
   doctorId  Int?
+  patientId Int?     @unique
+  patient   Patient? @relation(fields: [patientId], references: [id])
+
   createdAt DateTime @default(now())
 }
 
@@ -68,6 +69,7 @@ model Patient {
   medicalFile  MedicalFile?
   appointments Appointment[]
   createdAt    DateTime      @default(now())
+  User         User?
 }
 
 model MedicalFile {

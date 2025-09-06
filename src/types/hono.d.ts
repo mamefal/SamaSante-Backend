@@ -5,8 +5,9 @@ declare module 'hono' {
   interface Variables {
     user: {
       sub: number
-      role: 'ADMIN' | 'DOCTOR'
+      role: 'ADMIN' | 'DOCTOR'| 'PATIENT'
       doctorId?: number | null
+      patientId?: number | null
     }
   }
 }

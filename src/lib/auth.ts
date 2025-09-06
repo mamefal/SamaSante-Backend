@@ -1,17 +1,24 @@
 import { createHash } from 'crypto'
-import { SignJWT, jwtVerify } from 'jose'
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+const secret = new TextEncoder().encode(process.env.JWT_SECRET ?? 'change-me-super-secret')
 
-export const hash = (plain: string) =>
-  createHash('sha256').update(plain).digest('hex')
+/** Hash SHA-256 synchrone (même que le seed) */
+export function hash(plain: string): string {
+  return createHash('sha256').update(plain).digest('hex')
+}
 
-export const signJwt = async (payload: object) =>
-  await new SignJWT({ ...payload })
+/** Signe un JWT (HS256, exp 1 jour) */
+export async function signJwt(payload: JWTPayload | Record<string, unknown>) {
+  return await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime('1d')
     .sign(secret)
+}
 
-export const verifyJwt = async (token: string) =>
-  (await jwtVerify(token, secret)).payload
+/** Vérifie un JWT et renvoie le payload typé */
+export async function verifyJwt(token: string) {
+  const { payload } = await jwtVerify(token, secret)
+  return payload as { sub: number; role: 'ADMIN' | 'DOCTOR'; doctorId?: number | null }
+}
